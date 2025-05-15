@@ -13,11 +13,9 @@ export const AuthProvider = ({ children }) => {
 
       try {
         const payload = JSON.parse(atob(token.split('.')[1]));
-        setUser(payload);
       } catch (e) {
         console.error("Invalid token", e);
         setIsLoggedIn(false);
-        setUser(null);
       }
     }
   }, []);
@@ -27,7 +25,6 @@ export const AuthProvider = ({ children }) => {
     setIsLoggedIn(true);
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
-      setUser(payload);
     } catch (e) {
       console.error("Failed to decode token", e);
     }
@@ -36,7 +33,6 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem('aw-jwt');
     setIsLoggedIn(false);
-    setUser(null);
   };
 
   return (

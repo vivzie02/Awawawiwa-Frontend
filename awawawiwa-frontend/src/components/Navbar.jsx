@@ -1,8 +1,9 @@
 import React from 'react';
 import { useAuth } from "../contexts/AuthContext"
+import { logoutUser } from '../services/AuthService';
 
 export default function Navbar(){
-    const { isLoggedIn, user, login, logout } = useAuth();
+    const { isLoggedIn, logout } = useAuth();
 
     return (
         <nav className="flex justify-between items-center mb-4 p-4 bg-gray-800 text-white">
@@ -12,7 +13,7 @@ export default function Navbar(){
         <div className='flex justify-end'>
             <ul className="flex space-x-6 mr-8">
                 {!isLoggedIn && <li><a href="/login" className="hover:text-blue-400">Login</a></li> }
-                {isLoggedIn && <li><a href="/logout" className="hover:text-blue-400">Logout</a></li> }
+                {isLoggedIn && <li><button onClick={() => logoutUser(logout)} className='hover:text-blue-400 cursor-pointer'>Logout</button></li> }
                 {isLoggedIn && <li><a href="/profile" className="hover:text-blue-400">Profile</a></li> }
                 <li><a href="/about" className="hover:text-blue-400">About</a></li>
             </ul>
