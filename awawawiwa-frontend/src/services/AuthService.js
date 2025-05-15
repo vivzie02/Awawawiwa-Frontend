@@ -1,3 +1,5 @@
+import { useNavigate } from "react-router-dom";
+
 export const loginUser = async (username, password, login) => {
   const res = await fetch('http://localhost:5000/v1/users/login', {
     method: 'POST',
@@ -15,7 +17,7 @@ export const loginUser = async (username, password, login) => {
   login(data.token)
 };
 
-export async function logoutUser(logout){
+export async function logoutUser(logout, navigate){
   const token = localStorage.getItem('aw-jwt');
 
   const res = await fetch('http://localhost:5000/v1/users/logout', {
@@ -27,7 +29,8 @@ export async function logoutUser(logout){
   });
 
   if(res.ok){
-    logout() 
+    logout();
+    navigate('/');
   }
   else{
     throw new Error('Error logging out user')
