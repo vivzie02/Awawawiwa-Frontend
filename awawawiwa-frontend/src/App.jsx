@@ -8,6 +8,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import PrivateRoute from './components/PrivateRoute';
 import { AuthProvider } from './contexts/AuthContext';
+import CreateQuestion from './pages/CreateQuestion';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -26,6 +27,14 @@ function App() {
             element={
               <PrivateRoute>
                 <Profile />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/create-question"
+            element={
+              <PrivateRoute>
+                <CreateQuestion />
               </PrivateRoute>
             }
           />

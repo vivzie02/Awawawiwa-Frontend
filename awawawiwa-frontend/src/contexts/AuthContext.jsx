@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { isUserLoggedIn } from "../services/AuthService";
 
 const AuthContext = createContext();
 
@@ -42,14 +43,17 @@ export const AuthProvider = ({ children }) => {
     setIsLoggedIn(false);
   };
 
-  const isTokenValid = () => {
+  const isTokenValid = async () => {
     const token = localStorage.getItem('aw-jwt');
 
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
       const now = Math.floor(Date.now() / 1000);
       let valid = payload.exp > now
-      if(!valid){
+
+      let isLoggedIn = await isUserLoggedIn();
+
+      if(!valid || !isLoggedIn){
         //no need to invalidate token or navigate, since it happens in PrivateRoute
         logout();
       }

@@ -14,9 +14,9 @@ export default function MessageBox({ type = "error", title, message, onConfirm }
       >
         <strong className="font-semibold block">{title}</strong>
         <span className="block text-sm mt-1 mb-3">{message}</span>
-        <button
+        <button type="button"
           onClick={onConfirm}
-          className="mt-2 px-4 py-1 text-sm font-medium bg-red-600 text-white rounded hover:bg-red-700"
+          className="mt-2 px-4 py-1 text-sm font-medium bg-gray-600 text-white rounded hover:bg-gray-700"
         >
           OK
         </button>

@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { GetUser } from "../services/UserService";
+import { useNavigate } from "react-router-dom";
 
 export default function Profile() {
     const [username, setUsername] = useState(''); 
     const [email, setEmail] = useState('');
     const [rating, setRating] = useState('');
     const [error, setError] = useState('');
+    const navigate = useNavigate();
 
     useEffect(() => {
         const getUserData = async () => {
@@ -54,8 +56,8 @@ export default function Profile() {
             </div>
 
             {/* Button */}
-            <button className="mt-4 w-40 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-                My Questions
+            <button className="mt-4 w-40 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" onClick={() => navigate('/create-question')}>
+                Add new question
             </button>
             </div>
 
