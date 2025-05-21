@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { GetUser } from "../services/UserService";
 
 export default function Profile() {
     const [username, setUsername] = useState(''); 
@@ -7,7 +8,19 @@ export default function Profile() {
     const [error, setError] = useState('');
 
     useEffect(() => {
-        
+        const getUserData = async () => {
+            try {
+                const userData = await GetUser();
+                setUsername(userData.username);
+                setEmail(userData.email);
+                setRating(userData.rating);
+            } catch (err) {
+                setError('Failed to load user data');
+                console.error(err);
+            }
+        };
+
+        getUserData();
     }, []);
 
     return (
@@ -31,13 +44,13 @@ export default function Profile() {
             {/* Email */}
             <div>
                 <label className="block text-sm text-gray-500">Email</label>
-                <div className="text-md font-medium text-gray-700">viv@email.com</div>
+                <div className="text-md font-medium text-gray-700">{email}</div>
             </div>
 
             {/* Rating */}
             <div>
                 <label className="block text-sm text-gray-500">Rating</label>
-                <div className="text-md font-medium text-gray-700">0</div>
+                <div className="text-md font-medium text-gray-700">{rating}</div>
             </div>
 
             {/* Button */}

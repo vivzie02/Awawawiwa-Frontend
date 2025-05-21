@@ -1,5 +1,7 @@
+import { API_BASE_URL } from "../config/config";
+
 export async function RegisterUser(username, password, email){
-    const res = await fetch('http://localhost:5000/v1/users', {
+    const res = await fetch(`${API_BASE_URL}/users`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -16,7 +18,7 @@ export async function RegisterUser(username, password, email){
 export async function GetUser(){
     const token = localStorage.getItem('aw-jwt');
 
-    const res = await fetch('http://localhost:5000/v1/users/me', {
+    const res = await fetch(`${API_BASE_URL}/users/me`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',

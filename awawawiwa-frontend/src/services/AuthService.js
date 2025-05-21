@@ -1,7 +1,7 @@
-import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../config/config";
 
 export const loginUser = async (username, password, login) => {
-  const res = await fetch('http://localhost:5000/v1/users/login', {
+  const res = await fetch(`${API_BASE_URL}/users/login`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -17,10 +17,10 @@ export const loginUser = async (username, password, login) => {
   login(data.token)
 };
 
-export async function logoutUser(logout, navigate){
+export async function logoutUser(logout, navigate, isTokenValid){
   const token = localStorage.getItem('aw-jwt');
 
-  const res = await fetch('http://localhost:5000/v1/users/logout', {
+  const res = await fetch(`${API_BASE_URL}/users/logout`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -28,7 +28,7 @@ export async function logoutUser(logout, navigate){
     }
   });
 
-  if(res.ok){
+  if(res.ok || !isTokenValid()){
     logout();
     navigate('/');
   }

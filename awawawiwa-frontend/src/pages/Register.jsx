@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { RegisterUser } from "../services/UserService";
 import { useNavigate } from "react-router-dom";
+import MessageBox from "../components/MessageBox";
 
 export default function Register(){
     const [username, setUsername] = useState('');
@@ -34,7 +35,13 @@ export default function Register(){
                 <input type="text" id="username" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username" className="w-full p-2 border rounded" required />
                 <input type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" className="w-full p-2 border rounded" required />
                 <input type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" className="w-full p-2 border rounded" required />
-                {error && <div className="text-red-500 text-center mb-4">{error}</div>}
+                {error && 
+                    <MessageBox 
+                        type = "error"
+                        title = "Signup failed"
+                        message = {error}
+                        onConfirm = {() => setError(null)}
+                    ></MessageBox>}
                 <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
                     Register
                 </button>

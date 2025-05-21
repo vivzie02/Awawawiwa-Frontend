@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom"
 import { loginUser } from "../services/AuthService";
 import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
+import MessageBox from "../components/MessageBox";
 
 export default function Login(){
     const [username, setUsername] = useState('');
@@ -31,7 +32,13 @@ export default function Login(){
         <div className="max-w-sm mx-auto mt-20 p-6 border rounded bg-white shadow">
             <h1 className="text-2xl font-semibold mb-4">Login</h1>
 
-            {error && <div className="text-red-500 text-center mb-4">{error}</div>}
+            {error && 
+            <MessageBox 
+                type = "error"
+                title = "Login failed"
+                message = {error}
+                onConfirm = {() => setError(null)}
+            ></MessageBox>}
 
             <form className="space-y-4" onSubmit={handleSubmit}>
                 <input type="text" id="username" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username" className="w-full p-2 border rounded" required />
