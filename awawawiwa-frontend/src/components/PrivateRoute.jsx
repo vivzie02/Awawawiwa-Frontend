@@ -1,24 +1,34 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import MessageBox from './MessageBox';
 
 export default function PrivateRoute({ children }) {
-  const { isLoggedIn, isTokenValid, logout, isAuthLoading } = useAuth();
+  const { isTokenValid, logout, isAuthLoading } = useAuth();
   const [confirmed, setConfirmed] = useState(false);
+  const [validToken, setValidToken] = useState(null);
 
-  if(isAuthLoading){
+  useEffect(() => {
+    const checkToken = async () => {
+      const result = await isTokenValid();
+      setValidToken(result);
+    };
+
+    if (!isAuthLoading && validToken === null) {
+      checkToken();
+    }
+  }, [isAuthLoading, isTokenValid, validToken]);
+
+  if(isAuthLoading || validToken == null){
     return null;
   }
 
-  const shouldAccess = isTokenValid() && isLoggedIn;
-
-  if (!shouldAccess && confirmed) {
+  if (!validToken && confirmed) {
     logout();
     return <Navigate to="/" />;
   }
 
-  if (shouldAccess) {
+  if (validToken) {
     return children;
   }
 

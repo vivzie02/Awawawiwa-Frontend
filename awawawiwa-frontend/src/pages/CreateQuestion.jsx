@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { categories } from "../config/question-categories";
+import { categories } from "../constants/question-categories";
 import { SubmitQuestion } from "../services/QuestionService";
 import MessageBox from "../components/MessageBox";
 

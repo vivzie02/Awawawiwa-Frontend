@@ -50,7 +50,7 @@ export async function isUserLoggedIn(){
 
   if(res.ok){
     const data = await res.json();
-    return data.IsLoggedIn;
+    return data.isLoggedIn;
   }
   else{
     throw new Error('Error getting user status')
