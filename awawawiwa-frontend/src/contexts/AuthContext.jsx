@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('aw-jwt');
     setIsLoggedIn(false);
   };
-
+ 
   const isTokenValid = async () => {
     const token = localStorage.getItem('aw-jwt');
 
