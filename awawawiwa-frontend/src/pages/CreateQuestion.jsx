@@ -35,8 +35,9 @@ export default function CreateQuestion() {
             setMessageTitle("Success");
             setMessage(response);
         } catch (err) {
+            setMessageType("error")
             setMessageTitle("Something went wrong");
-            setMessage(err);
+            setMessage(err.message || "Create Question failed");
         } finally {
             setLoading(false);
         }
