@@ -19,3 +19,59 @@ export async function SubmitQuestion(category, question, image, answer){
 
     return "Question uploaded successfully";
 }
+
+export async function GetUserQuestions(){
+    const token = localStorage.getItem('aw-jwt');
+
+    const res = await fetch(`${API_BASE_URL}/questions/user`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    if(!res.ok){
+        const data = await res.json();
+        throw new Error(data.message);
+    }
+
+    return await res.json();
+}
+
+export async function DeleteQuestionById(questionId){
+    const token = localStorage.getItem('aw-jwt');
+
+    const res = await fetch(`${API_BASE_URL}/questions/${questionId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    if(!res.ok){
+        const data = await res.json();
+        throw new Error(data.message);
+    }
+
+    return "Question deleted";
+}
+
+export async function PatchQuestionById(questionId, updatedData) {
+    const token = localStorage.getItem('aw-jwt');
+
+    const res = await fetch(`${API_BASE_URL}/questions/${questionId}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(updatedData)
+    });
+
+    if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.message);
+    }
+}
