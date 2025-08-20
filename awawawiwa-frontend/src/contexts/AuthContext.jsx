@@ -46,6 +46,11 @@ export const AuthProvider = ({ children }) => {
   const isTokenValid = async () => {
     const token = localStorage.getItem('aw-jwt');
 
+    if(!token){
+      setIsLoggedIn(false);
+      return false;
+    }
+
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
       const now = Math.floor(Date.now() / 1000);
@@ -56,6 +61,7 @@ export const AuthProvider = ({ children }) => {
       if(!valid || !isLoggedIn){
         //no need to invalidate token or navigate, since it happens in PrivateRoute
         logout();
+        return false;
       }
 
       return payload.exp > now;
