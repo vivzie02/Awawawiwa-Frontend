@@ -3,15 +3,16 @@ import { useAuth } from "../contexts/AuthContext";
 import { motion } from "framer-motion";
 import { useUser } from "../contexts/UserContext";
 import ImageCard from "../components/ImageCard";
+import { useEffect } from "react";
 
 export default function Home() {
   const { isLoggedIn } = useAuth();
   const { user } = useUser();
   const navigate = useNavigate();
+  const { loading } = useUser();
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Hero Section */}
       <section className="flex flex-col items-center justify-center text-center px-6 py-20 bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
         <motion.h1
           initial={{ opacity: 0, y: -20 }}
@@ -22,7 +23,7 @@ export default function Home() {
           AWAWAWIWA PubQuiz
         </motion.h1>
 
-        {isLoggedIn && <motion.p
+        {isLoggedIn && !loading && <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}

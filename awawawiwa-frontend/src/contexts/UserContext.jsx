@@ -8,18 +8,24 @@ export const UserProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const { isTokenValid, logout, isAuthLoading } = useAuth();
+    const { callIsTokenValid, isLoggedIn, isAuthLoading } = useAuth();
 
     const fetchUser = async () => {
+        if(isAuthLoading) {
+            return;
+        }
+
+        if(!isLoggedIn) {
+            setLoading(false);
+            return; 
+        }
+
         try {
             const data = await GetUser();
             setUser(data);
-            setIsLoggedIn(true);
         } catch (err) {
             console.error("Failed to fetch user:", err);
             setError(err.message || "Failed to fetch user data");
-            setIsLoggedIn(false);
         } finally {
             setLoading(false);
         }
@@ -27,8 +33,11 @@ export const UserProvider = ({ children }) => {
 
     useEffect(() => {
         const checkAuth = async () => {
-            if(!isAuthLoading && await isTokenValid()) {
-                fetchUser();
+            if(!isAuthLoading) {
+                await fetchUser();
+            }
+            else {
+                setUser(null);
             }
         };
 
