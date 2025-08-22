@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { isUserLoggedIn } from "../services/AuthService";
 
 const AuthContext = createContext();
@@ -10,55 +10,68 @@ export const AuthProvider = ({ children }) => {
   // On page load, check for token
   useEffect(() => {
     const initAuth = async () => {
-      const token = localStorage.getItem('aw-jwt');
-      if (token) {
-        setIsLoggedIn(true);
-
-        try {
-          const payload = JSON.parse(atob(token.split('.')[1]));
-        } catch (e) {
-          console.error("Invalid token", e);
-          setIsLoggedIn(false);
-        }
-      }
-
-      setIsAuthLoading(false);
+      //will log the user out if token is not valid
+      console.log("Checking token validity on init...");
+      const valid = await callIsTokenValid();
+      setIsLoggedIn(valid);
     }
 
     initAuth();
   }, []);
 
-  const login = (token) => {
+  const login = async (token) => {
+    setIsAuthLoading(true);
+
     localStorage.setItem('aw-jwt', token);
-    setIsLoggedIn(true);
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-    } catch (e) {
-      console.error("Failed to decode token", e);
+
+    if(await isTokenValid()){
+      setIsLoggedIn(true);
     }
+
+    setIsAuthLoading(false);
   };
 
   const logout = () => {
+    setIsAuthLoading(true);
     localStorage.removeItem('aw-jwt');
     setIsLoggedIn(false);
+    setIsAuthLoading(false);
   };
- 
+
+  const callIsTokenValid = async () => {
+    setIsAuthLoading(true);
+    const valid = await isTokenValid();
+    setIsAuthLoading(false);
+    return valid;
+  };
+
   const isTokenValid = async () => {
     const token = localStorage.getItem('aw-jwt');
+
+    if(!token){
+      logout();
+      return false;
+    }
 
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
       const now = Math.floor(Date.now() / 1000);
-      let valid = payload.exp > now
+      const valid = payload.exp > now
 
-      let isLoggedIn = await isUserLoggedIn();
-
-      if(!valid || !isLoggedIn){
-        //no need to invalidate token or navigate, since it happens in PrivateRoute
+      if(!valid) {
         logout();
+        return false;
       }
 
-      return payload.exp > now;
+      const isUserValid = await isUserLoggedIn();
+
+      if(!isUserValid){
+        //no need to invalidate token or navigate, since it happens in PrivateRoute
+        logout();
+        return false;
+      }
+
+      return true;
     } catch (e) {
       logout();
       return false;
@@ -66,7 +79,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, login, logout, isTokenValid, isAuthLoading }}>
+    <AuthContext.Provider value={{ isLoggedIn, login, logout, callIsTokenValid, isAuthLoading }}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { GetUser, UploadProfilePicture } from "../services/UserService";
+import { UploadProfilePicture } from "../services/UserService";
 import { useNavigate } from "react-router-dom";
 import MessageBox from "../components/MessageBox";
 import { CameraIcon } from '@heroicons/react/24/outline';
@@ -7,13 +7,10 @@ import { IMAGE_BASE_URL } from "../config/config";
 import QuestionCard from "../components/QuestionCard";
 import { GetUserQuestions, DeleteQuestionById } from "../services/QuestionService";
 import { categories } from "../constants/question-categories";
+import { useUser } from "../contexts/UserContext";
 
 export default function Profile() {
-    const [username, setUsername] = useState(''); 
-    const [email, setEmail] = useState('');
-    const [rating, setRating] = useState('');
-    const [profilePicture, setProfilePicture] = useState('');
-    const [error, setError] = useState('');
+    const { user, setUser } = useUser();
     const navigate = useNavigate();
     const [message, setMessage] = useState('');
     const [messageTitle, setMessageTitle] = useState('');
@@ -22,26 +19,15 @@ export default function Profile() {
     const [searchText, setSearchText] = useState('');
     const [filter, setFilter] = useState('');
 
-    
+
     useEffect(() => {
-        getUserData();
+        const fetchQuestions = async () => {
+            const userQuestions = await GetUserQuestions();
+            setQuestions(userQuestions);
+        };
+
+        fetchQuestions();
     }, []);
-
-    const getUserData = async () => {
-        try {
-            const userData = await GetUser();
-            setUsername(userData.username);
-            setEmail(userData.email);
-            setRating(userData.rating);
-            setProfilePicture(userData.profilePicture)
-
-            const questions = await GetUserQuestions();
-            setQuestions(questions);
-        } catch (err) {
-            setError('Failed to load user data');
-            console.error(err);
-        }
-    }
 
     const filteredQuestions = questions.filter((q) => {
         const matchesSearch = q.question.toLowerCase().includes(searchText.toLowerCase()) || q.answer.toLowerCase().includes(searchText.toLowerCase());
@@ -58,7 +44,9 @@ export default function Profile() {
             setMessageTitle("Deleted");
             setMessage("Question deleted successfully");
 
-            getUserData();
+            setQuestions((prevQuestions) =>
+                prevQuestions.filter((q) => q.questionId !== questionId)
+            );
         } catch (err) {
             setMessageType("error");
             setMessageTitle("Error");
@@ -84,7 +72,7 @@ export default function Profile() {
                     <div className="flex items-center space-x-4">
                         <label htmlFor="profile-upload" className="relative group inline-block cursor-pointer">
                             <img
-                                src={`${IMAGE_BASE_URL}${profilePicture}` || null}
+                                src={`${IMAGE_BASE_URL}${user?.profilePicture}` || null}
                                 alt="Profile"
                                 className="w-24 h-24 rounded-full object-cover border-4 border-blue-300 shadow"
                             />
@@ -102,13 +90,17 @@ export default function Profile() {
                             onChange={
                                 async (e) => {
                                     try{
-                                        await UploadProfilePicture(e.target.files[0]);
+                                        var result = await UploadProfilePicture(e.target.files[0]);
 
                                         setMessageType("success");
                                         setMessageTitle("Success");
                                         setMessage("Image uploaded successfully");
 
-                                        getUserData();
+                                        // Update user context with new profile picture
+                                        setUser((prevUser) => ({
+                                            ...prevUser,
+                                            profilePicture: result.userData.profilePicture
+                                        }));
                                     } catch(err){
                                         setMessageType("error")
                                         setMessageTitle("Something went wrong");
@@ -120,20 +112,20 @@ export default function Profile() {
                         </input>
                         <div>
                             <label className="text-sm text-gray-500">Username</label>
-                            <div className="text-xl font-semibold text-gray-800">{username}</div>
+                            <div className="text-xl font-semibold text-gray-800">{user?.username}</div>
                         </div>
                     </div>
 
                     {/* Email */}
                     <div>
                         <label className="block text-sm text-gray-500">Email</label>
-                        <div className="text-md font-medium text-gray-700">{email}</div>
+                        <div className="text-md font-medium text-gray-700">{user?.email}</div>
                     </div>
 
                     {/* Rating */}
                     <div>
                         <label className="block text-sm text-gray-500">Rating</label>
-                        <div className="text-md font-medium text-gray-700">{rating}</div>
+                        <div className="text-md font-medium text-gray-700">{user?.rating}</div>
                     </div>
 
                     {/* Button */}

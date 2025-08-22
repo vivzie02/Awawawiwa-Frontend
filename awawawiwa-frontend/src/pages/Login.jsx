@@ -3,6 +3,7 @@ import { loginUser } from "../services/AuthService";
 import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import MessageBox from "../components/MessageBox";
+import { useUser } from "../contexts/UserContext";
 
 export default function Login(){
     const [username, setUsername] = useState('');
