@@ -8,10 +8,10 @@ import LoadingScreen from './components/LoadingScreen.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-      <AuthProvider>
-        <UserProvider>
-          <App />
-        </UserProvider>
-      </AuthProvider>
+    <AuthProvider>
+      <UserProvider>
+        <App />
+      </UserProvider>
+    </AuthProvider>
   </StrictMode>,
 )

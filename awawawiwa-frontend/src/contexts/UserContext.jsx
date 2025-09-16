@@ -33,11 +33,13 @@ export const UserProvider = ({ children }) => {
 
     useEffect(() => {
         const checkAuth = async () => {
-            if(!isAuthLoading) {
+            // only fetch user if token is valid and user is not already set
+            if(!isAuthLoading && isLoggedIn && !user) {
                 await fetchUser();
             }
-            else {
+            else if(!isAuthLoading && !isLoggedIn) {
                 setUser(null);
+                setLoading(false);
             }
         };
 
