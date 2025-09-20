@@ -5,13 +5,18 @@ import App from './App.jsx'
 import { AuthProvider } from './contexts/AuthContext.jsx'
 import { UserProvider } from './contexts/UserContext.jsx'
 import LoadingScreen from './components/LoadingScreen.jsx'
+import { LoadingProvider } from './contexts/LoadingContext.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <AuthProvider>
-      <UserProvider>
-        <App />
-      </UserProvider>
-    </AuthProvider>
+    <LoadingProvider>
+      <AuthProvider>
+        <LoadingScreen>
+          <UserProvider>
+            <App />
+          </UserProvider>
+        </LoadingScreen>
+      </AuthProvider>
+    </LoadingProvider>
   </StrictMode>,
 )

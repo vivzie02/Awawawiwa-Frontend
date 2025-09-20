@@ -3,13 +3,14 @@ import { loginUser } from "../services/AuthService";
 import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import MessageBox from "../components/MessageBox";
-import { useUser } from "../contexts/UserContext";
+import { useLoading } from "../contexts/LoadingContext";
 
 export default function Login(){
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const { login } = useAuth();
+    const { startLoading, stopLoading } = useLoading();
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -22,10 +23,15 @@ export default function Login(){
         }
 
         try{
+            startLoading();
+
             await loginUser(username, password, login);
             navigate('/');
         } catch(error){
             setError(error.message || 'Login failed');
+        }
+        finally{
+            stopLoading();
         }
     }
 

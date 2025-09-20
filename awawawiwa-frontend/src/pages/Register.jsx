@@ -2,6 +2,7 @@ import { useState } from "react";
 import { RegisterUser } from "../services/UserService";
 import { useNavigate } from "react-router-dom";
 import MessageBox from "../components/MessageBox";
+import { useLoading } from "../contexts/LoadingContext";
 
 export default function Register(){
     const [username, setUsername] = useState('');
@@ -9,6 +10,7 @@ export default function Register(){
     const [email, setEmail] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
+    const { startLoading, stopLoading } = useLoading();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -20,10 +22,15 @@ export default function Register(){
         }
 
         try{
+            startLoading();
+
             await RegisterUser(username, password, email);
             navigate('/');
         } catch(error){
             setError(error.message);
+        }
+        finally{
+            stopLoading();
         }
     }
     
