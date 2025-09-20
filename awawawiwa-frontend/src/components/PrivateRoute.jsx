@@ -4,7 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import MessageBox from './MessageBox';
 
 export default function PrivateRoute({ children }) {
-  const { logout, isAuthLoading, isLoggedIn } = useAuth();
+  const { logout, isAuthReady, isLoggedIn } = useAuth();
   const [confirmed, setConfirmed] = useState(false);
 
   useEffect(() => {
@@ -14,7 +14,7 @@ export default function PrivateRoute({ children }) {
     }
   }, [confirmed]);
 
-  if(isAuthLoading){
+  if(!isAuthReady){
     return null;
   }
 

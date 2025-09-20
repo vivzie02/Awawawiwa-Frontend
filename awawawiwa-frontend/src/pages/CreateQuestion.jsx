@@ -2,16 +2,17 @@ import { useState } from "react";
 import { categories } from "../constants/question-categories";
 import { SubmitQuestion } from "../services/QuestionService";
 import MessageBox from "../components/MessageBox";
+import { useLoading } from "../contexts/LoadingContext";
 
 export default function CreateQuestion() {
     const [category, setCategory] = useState("");
     const [question, setQuestion] = useState("");
     const [image, setImage] = useState(null);
     const [answer, setAnswer] = useState("");
-    const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState('');
     const [messageTitle, setMessageTitle] = useState('');
     const [messageType, setMessageType] = useState('')
+    const { isLoading, startLoading, stopLoading } = useLoading();
 
     const handleFileChange = (e) => {
         const file = e.target.files?.[0];
@@ -21,7 +22,7 @@ export default function CreateQuestion() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        setLoading(true);
+        startLoading();
         try {
             let response = await SubmitQuestion(category, question, image, answer);
 
@@ -39,7 +40,7 @@ export default function CreateQuestion() {
             setMessageTitle("Something went wrong");
             setMessage(err.message || "Create Question failed");
         } finally {
-            setLoading(false);
+            stopLoading();
         }
     };
 
@@ -106,10 +107,10 @@ export default function CreateQuestion() {
 
                 <button
                     type="submit"
-                    disabled={loading}
+                    disabled={isLoading}
                     className="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
                 >
-                    {loading ? "Submitting..." : "Submit"}
+                    {isLoading ? "Submitting..." : "Submit"}
                 </button>
             </form>
 

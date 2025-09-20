@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useLayoutEffect } from "react";
 import { UploadProfilePicture } from "../services/UserService";
 import { useNavigate } from "react-router-dom";
 import MessageBox from "../components/MessageBox";
@@ -8,9 +8,10 @@ import QuestionCard from "../components/QuestionCard";
 import { GetUserQuestions, DeleteQuestionById } from "../services/QuestionService";
 import { categories } from "../constants/question-categories";
 import { useUser } from "../contexts/UserContext";
+import { useLoading } from "../contexts/LoadingContext";
 
 export default function Profile() {
-    const { user, setUser } = useUser();
+    const { user, setUser, fetchUser } = useUser();
     const navigate = useNavigate();
     const [message, setMessage] = useState('');
     const [messageTitle, setMessageTitle] = useState('');
@@ -18,14 +19,22 @@ export default function Profile() {
     const [questions, setQuestions] = useState([]);
     const [searchText, setSearchText] = useState('');
     const [filter, setFilter] = useState('');
+    const { startLoading, stopLoading } = useLoading();
 
+    const fetchQuestions = async () => {
+        startLoading();
+
+        //refresh user data
+        await fetchUser();
+
+        //fetch user questions
+        const userQuestions = await GetUserQuestions();
+        setQuestions(userQuestions);
+
+        stopLoading();
+    };
 
     useEffect(() => {
-        const fetchQuestions = async () => {
-            const userQuestions = await GetUserQuestions();
-            setQuestions(userQuestions);
-        };
-
         fetchQuestions();
     }, []);
 

@@ -4,12 +4,25 @@ import { motion } from "framer-motion";
 import { useUser } from "../contexts/UserContext";
 import ImageCard from "../components/ImageCard";
 import { useEffect } from "react";
+import { useLoading } from "../contexts/LoadingContext";
 
 export default function Home() {
-  const { isLoggedIn } = useAuth();
-  const { user } = useUser();
+  const { isLoggedIn, isAuthReady } = useAuth();
+  const { user, fetchUser } = useUser();
   const navigate = useNavigate();
-  const { loading } = useUser();
+  const { isLoading } = useLoading();
+
+  useEffect(() => {
+    const loadData = async () => {
+      if(!isAuthReady) return;
+
+      // Refresh user data
+      if (isLoggedIn) {
+        await fetchUser();
+      }
+    };
+    loadData();
+  }, [isAuthReady, isLoggedIn]);
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -23,7 +36,7 @@ export default function Home() {
           AWAWAWIWA PubQuiz
         </motion.h1>
 
-        {isLoggedIn && !loading && <motion.p
+        {isLoggedIn && !isLoading && <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}

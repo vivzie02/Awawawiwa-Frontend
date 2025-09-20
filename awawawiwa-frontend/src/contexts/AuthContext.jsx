@@ -1,11 +1,13 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { isUserLoggedIn } from "../services/AuthService";
+import { useLoading } from './LoadingContext';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isAuthLoading, setIsAuthLoading] = useState(true);
+  const { startLoading, stopLoading } = useLoading();
+  const [isAuthReady, setIsAuthReady] = useState(false);
 
   // On page load, check for token
   useEffect(() => {
@@ -14,13 +16,14 @@ export const AuthProvider = ({ children }) => {
       console.log("Checking token validity on init...");
       const valid = await callIsTokenValid();
       setIsLoggedIn(valid);
+      setIsAuthReady(true);
     }
 
     initAuth();
   }, []);
 
   const login = async (token) => {
-    setIsAuthLoading(true);
+    startLoading();
 
     localStorage.setItem('aw-jwt', token);
 
@@ -28,20 +31,20 @@ export const AuthProvider = ({ children }) => {
       setIsLoggedIn(true);
     }
 
-    setIsAuthLoading(false);
+    stopLoading();
   };
 
   const logout = () => {
-    setIsAuthLoading(true);
+    startLoading();
     localStorage.removeItem('aw-jwt');
     setIsLoggedIn(false);
-    setIsAuthLoading(false);
+    stopLoading();
   };
 
   const callIsTokenValid = async () => {
-    setIsAuthLoading(true);
+    startLoading();
     const valid = await isTokenValid();
-    setIsAuthLoading(false);
+    stopLoading();
     return valid;
   };
 
@@ -79,7 +82,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, login, logout, callIsTokenValid, isAuthLoading }}>
+    <AuthContext.Provider value={{ isLoggedIn, isAuthReady, login, logout, callIsTokenValid }}>
       {children}
     </AuthContext.Provider>
   );

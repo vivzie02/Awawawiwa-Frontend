@@ -14,16 +14,13 @@ import { useUser } from './contexts/UserContext';
 
 function App() {
   const [count, setCount] = useState(0)
-  const { loading } = useUser(); 
 
   return (
     <Router>
       <Navbar></Navbar>
       <Routes>
         <Route path="/" element={
-          <LoadingScreen isLoading={loading}>
-            <Home />
-          </LoadingScreen>
+          <Home />
         } />
 
         <Route path="/about" element={<About />} />
@@ -33,9 +30,7 @@ function App() {
           path="/profile"
           element={
             <PrivateRoute>
-              <LoadingScreen isLoading={loading}>
-                <Profile />
-              </LoadingScreen>
+              <Profile />
             </PrivateRoute>
           }
         />

@@ -1,22 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
+import { useLoading } from "../contexts/LoadingContext";
 
-export default function LoadingScreen({ children, minDuration = 1000, isLoading }) {
+export default function LoadingScreen({ children }) {
   const { isAuthLoading } = useAuth();
-  const [showSpinner, setShowSpinner] = useState(true);
+  const [showSpinner, setShowSpinner] = useState(false);
+  const { isLoading } = useLoading();
 
   useEffect(() => {
-    let timer;
-
-    if (!isAuthLoading && !isLoading) {
-      // Keep spinner visible for at least minDuration
-      timer = setTimeout(() => setShowSpinner(false), minDuration);
-    } else {
-      setShowSpinner(true);
-    }
-
-    return () => clearTimeout(timer);
-  }, [isAuthLoading, minDuration, isLoading]);
+    setShowSpinner(isLoading);
+  }, [isLoading]);
 
   return (
     <div className="relative min-h-screen">

@@ -1,22 +1,21 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { GetUser } from "../services/UserService";
 import { useAuth } from "./AuthContext";
+import { useLoading } from "./LoadingContext";
 
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
     const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const { callIsTokenValid, isLoggedIn, isAuthLoading } = useAuth();
+    const { isLoggedIn } = useAuth();
+    const { isLoading, startLoading, stopLoading } = useLoading();
 
     const fetchUser = async () => {
-        if(isAuthLoading) {
-            return;
-        }
+        startLoading();
 
         if(!isLoggedIn) {
-            setLoading(false);
+            stopLoading();
             return; 
         }
 
@@ -27,27 +26,12 @@ export const UserProvider = ({ children }) => {
             console.error("Failed to fetch user:", err);
             setError(err.message || "Failed to fetch user data");
         } finally {
-            setLoading(false);
+            stopLoading();
         }
     };
 
-    useEffect(() => {
-        const checkAuth = async () => {
-            // only fetch user if token is valid and user is not already set
-            if(!isAuthLoading && isLoggedIn && !user) {
-                await fetchUser();
-            }
-            else if(!isAuthLoading && !isLoggedIn) {
-                setUser(null);
-                setLoading(false);
-            }
-        };
-
-        checkAuth();
-    }, [isAuthLoading]);
-
     return (
-        <UserContext.Provider value={{ user, setUser, loading, error, fetchUser }}>
+        <UserContext.Provider value={{ user, setUser, error, fetchUser }}>
             {children}
         </UserContext.Provider>
     );
