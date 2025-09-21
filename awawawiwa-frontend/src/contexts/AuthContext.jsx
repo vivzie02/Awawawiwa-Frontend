@@ -9,17 +9,17 @@ export const AuthProvider = ({ children }) => {
   const { startLoading, stopLoading } = useLoading();
   const [isAuthReady, setIsAuthReady] = useState(false);
 
-  // On page load, check for token
   useEffect(() => {
-    const initAuth = async () => {
-      //will log the user out if token is not valid
-      console.log("Checking token validity on init...");
-      const valid = await callIsTokenValid();
-      setIsLoggedIn(valid);
-      setIsAuthReady(true);
-    }
+    const checkAuth = async () => {
+      startLoading();
 
-    initAuth();
+      const loggedIn = await callIsTokenValid();
+      setIsLoggedIn(loggedIn);
+      setIsAuthReady(true);
+      stopLoading();
+    };
+
+    checkAuth();
   }, []);
 
   const login = async (token) => {
@@ -56,29 +56,16 @@ export const AuthProvider = ({ children }) => {
       return false;
     }
 
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const now = Math.floor(Date.now() / 1000);
-      const valid = payload.exp > now
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const now = Math.floor(Date.now() / 1000);
+    const valid = payload.exp > now
 
-      if(!valid) {
-        logout();
-        return false;
-      }
-
-      const isUserValid = await isUserLoggedIn();
-
-      if(!isUserValid){
-        //no need to invalidate token or navigate, since it happens in PrivateRoute
-        logout();
-        return false;
-      }
-
-      return true;
-    } catch (e) {
+    if(!valid) {
       logout();
       return false;
     }
+
+    return true;
   };
 
   return (
