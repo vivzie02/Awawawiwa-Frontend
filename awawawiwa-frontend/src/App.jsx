@@ -9,40 +9,43 @@ import Register from './pages/Register';
 import PrivateRoute from './components/PrivateRoute';
 import { AuthProvider } from './contexts/AuthContext';
 import CreateQuestion from './pages/CreateQuestion';
+import LoadingScreen from './components/LoadingScreen';
+import { useUser } from './contexts/UserContext';
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <AuthProvider>
-      <Router>
-        <Navbar></Navbar>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path='/login' element={<Login />} />
-          <Route path='/register' element={<Register />} />
-          <Route
-            path="/profile"
-            element={
-              <PrivateRoute>
-                <Profile />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/create-question"
-            element={
-              <PrivateRoute>
-                <CreateQuestion />
-              </PrivateRoute>
-            }
-          />
+    <Router>
+      <Navbar></Navbar>
+      <Routes>
+        <Route path="/" element={
+          <Home />
+        } />
 
-          <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
-      </Router>
-    </AuthProvider>
+        <Route path="/about" element={<About />} />
+        <Route path='/login' element={<Login />} />
+        <Route path='/register' element={<Register />} />
+        <Route
+          path="/profile"
+          element={
+            <PrivateRoute>
+              <Profile />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/create-question"
+          element={
+            <PrivateRoute>
+              <CreateQuestion />
+            </PrivateRoute>
+          }
+        />
+        
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </Router>
   )
 }
 

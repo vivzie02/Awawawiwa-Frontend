@@ -3,12 +3,14 @@ import { loginUser } from "../services/AuthService";
 import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import MessageBox from "../components/MessageBox";
+import { useLoading } from "../contexts/LoadingContext";
 
 export default function Login(){
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const { login } = useAuth();
+    const { startLoading, stopLoading } = useLoading();
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -21,10 +23,15 @@ export default function Login(){
         }
 
         try{
+            startLoading();
+
             await loginUser(username, password, login);
             navigate('/');
         } catch(error){
             setError(error.message || 'Login failed');
+        }
+        finally{
+            stopLoading();
         }
     }
 
@@ -44,10 +51,10 @@ export default function Login(){
                 <input type="text" id="username" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username" className="w-full p-2 border rounded" required />
                 <input type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" className="w-full p-2 border rounded" required />
                 <p className="text-red-500 text-sm"></p>
-                <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+                <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 cursor-pointer">
                     Log In
                 </button>
-                <button type="button" onClick={() => navigate('/register')} className="w-full bg-gray-600 text-white py-2 rounded hover:bg-gray-700">
+                <button type="button" onClick={() => navigate('/register')} className="w-full bg-gray-600 text-white py-2 rounded hover:bg-gray-700 cursor-pointer">
                     Or create new user
                 </button>
             </form>

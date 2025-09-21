@@ -1,72 +1,75 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { isUserLoggedIn } from "../services/AuthService";
+import { useLoading } from './LoadingContext';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isAuthLoading, setIsAuthLoading] = useState(true);
+  const { startLoading, stopLoading } = useLoading();
+  const [isAuthReady, setIsAuthReady] = useState(false);
 
-  // On page load, check for token
   useEffect(() => {
-    const initAuth = async () => {
-      const token = localStorage.getItem('aw-jwt');
-      if (token) {
-        setIsLoggedIn(true);
+    const checkAuth = async () => {
+      startLoading();
 
-        try {
-          const payload = JSON.parse(atob(token.split('.')[1]));
-        } catch (e) {
-          console.error("Invalid token", e);
-          setIsLoggedIn(false);
-        }
-      }
+      const loggedIn = await callIsTokenValid();
+      setIsLoggedIn(loggedIn);
+      setIsAuthReady(true);
+      stopLoading();
+    };
 
-      setIsAuthLoading(false);
-    }
-
-    initAuth();
+    checkAuth();
   }, []);
 
-  const login = (token) => {
+  const login = async (token) => {
+    startLoading();
+
     localStorage.setItem('aw-jwt', token);
-    setIsLoggedIn(true);
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-    } catch (e) {
-      console.error("Failed to decode token", e);
+
+    if(await isTokenValid()){
+      setIsLoggedIn(true);
     }
+
+    stopLoading();
   };
 
   const logout = () => {
+    startLoading();
     localStorage.removeItem('aw-jwt');
     setIsLoggedIn(false);
+    stopLoading();
   };
- 
+
+  const callIsTokenValid = async () => {
+    startLoading();
+    const valid = await isTokenValid();
+    stopLoading();
+    return valid;
+  };
+
   const isTokenValid = async () => {
     const token = localStorage.getItem('aw-jwt');
 
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const now = Math.floor(Date.now() / 1000);
-      let valid = payload.exp > now
-
-      let isLoggedIn = await isUserLoggedIn();
-
-      if(!valid || !isLoggedIn){
-        //no need to invalidate token or navigate, since it happens in PrivateRoute
-        logout();
-      }
-
-      return payload.exp > now;
-    } catch (e) {
+    if(!token){
       logout();
       return false;
     }
+
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const now = Math.floor(Date.now() / 1000);
+    const valid = payload.exp > now
+
+    if(!valid) {
+      logout();
+      return false;
+    }
+
+    return true;
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, login, logout, isTokenValid, isAuthLoading }}>
+    <AuthContext.Provider value={{ isLoggedIn, isAuthReady, login, logout, callIsTokenValid }}>
       {children}
     </AuthContext.Provider>
   );

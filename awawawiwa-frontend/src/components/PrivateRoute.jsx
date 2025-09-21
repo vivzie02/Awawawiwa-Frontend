@@ -4,31 +4,25 @@ import { useAuth } from '../contexts/AuthContext';
 import MessageBox from './MessageBox';
 
 export default function PrivateRoute({ children }) {
-  const { isTokenValid, logout, isAuthLoading } = useAuth();
+  const { logout, isAuthReady, isLoggedIn } = useAuth();
   const [confirmed, setConfirmed] = useState(false);
-  const [validToken, setValidToken] = useState(null);
 
   useEffect(() => {
-    const checkToken = async () => {
-      const result = await isTokenValid();
-      setValidToken(result);
-    };
-
-    if (!isAuthLoading && validToken === null) {
-      checkToken();
+    console.log("Check if MessageBox is accepted");
+    if (confirmed) {
+      logout();
     }
-  }, [isAuthLoading, isTokenValid, validToken]);
+  }, [confirmed]);
 
-  if(isAuthLoading || validToken == null){
+  if(!isAuthReady){
     return null;
   }
 
-  if (!validToken && confirmed) {
-    logout();
+  if (confirmed) {
     return <Navigate to="/" />;
   }
 
-  if (validToken) {
+  if (isLoggedIn) {
     return children;
   }
 
