@@ -14,15 +14,18 @@ export default function Home() {
 
   useEffect(() => {
     const loadData = async () => {
-      if(!isAuthReady) return;
-
       // Refresh user data
       if (isLoggedIn) {
         await fetchUser();
       }
     };
     loadData();
-  }, [isAuthReady, isLoggedIn]);
+  }, [isLoggedIn]);
+
+  // Wait until auth state is ready
+  if (!isAuthReady) {
+    return null; 
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">

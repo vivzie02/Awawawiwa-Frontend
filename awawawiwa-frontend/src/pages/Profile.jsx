@@ -28,10 +28,21 @@ export default function Profile() {
         await fetchUser();
 
         //fetch user questions
-        const userQuestions = await GetUserQuestions();
-        setQuestions(userQuestions);
+        try{
+            const userQuestions = await GetUserQuestions();
+            setQuestions(userQuestions);
 
-        stopLoading();
+            stopLoading();
+        } catch (error) {
+            setMessageType("error");
+            setMessageTitle("Error");
+            setMessage("Failed to fetch user data");
+            stopLoading();
+        }
+        finally{
+            stopLoading();
+        }
+        
     };
 
     useEffect(() => {

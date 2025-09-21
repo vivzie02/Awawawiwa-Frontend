@@ -3,7 +3,6 @@ import { useAuth } from "../contexts/AuthContext";
 import { useLoading } from "../contexts/LoadingContext";
 
 export default function LoadingScreen({ children }) {
-  const { isAuthLoading } = useAuth();
   const [showSpinner, setShowSpinner] = useState(false);
   const { isLoading } = useLoading();
 
