@@ -1,5 +1,4 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
-import { isUserLoggedIn } from "../services/AuthService";
 import { useLoading } from './LoadingContext';
 
 const AuthContext = createContext();
