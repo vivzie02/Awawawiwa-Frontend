@@ -31,4 +31,6 @@ export async function logoutUser(){
   if(!res.ok){
     console.error('Error logging out user');
   }
+
+  return res.ok;
 }  
