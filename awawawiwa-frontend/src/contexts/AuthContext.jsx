@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { useLoading } from './LoadingContext';
 import { logoutUser } from '../services/AuthService';
 
@@ -13,10 +13,15 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkAuth = async () => {
       startLoading();
-      const loggedIn = await callIsTokenValid();
-      setIsLoggedIn(loggedIn);
-      setIsAuthReady(true);
-      stopLoading();
+      try{
+        const loggedIn = await callIsTokenValid();
+        setIsLoggedIn(loggedIn);
+        setIsAuthReady(true);
+      } catch (error) {
+        console.error('Error checking auth:', error);
+      } finally {
+        stopLoading();
+      }
     };
 
     if(localStorage.getItem("aw-jwt")){
@@ -31,33 +36,49 @@ export const AuthProvider = ({ children }) => {
   const login = async (token) => {
     startLoading();
 
-    localStorage.setItem('aw-jwt', token);
+    try{
+      localStorage.setItem('aw-jwt', token);
 
-    if(await isTokenValid()){
-      setIsLoggedIn(true);
+      if(await isTokenValid()){
+        setIsLoggedIn(true);
+      }
+    } catch (error) {
+      console.error('Error logging in:', error);
+    } finally {
+      stopLoading();
     }
-
-    stopLoading();
   };
 
   const logout = async (reason = null) => {
     startLoading();
-    const success = await logoutUser();
-    if(!success){
-      console.error('Logout failed');
+
+    try{
+      const success = await logoutUser();
+      if(!success){
+        console.error('Logout failed');
+      }
+      localStorage.removeItem('aw-jwt');
+      localStorage.removeItem('refresh-token');
+      setIsLoggedIn(false);
+      if (reason) setLogoutReason(reason);
+    } catch (error) {
+      console.error('Error logging out:', error);
+    } finally {
+      stopLoading();
     }
-    localStorage.removeItem('aw-jwt');
-    localStorage.removeItem('refresh-token');
-    setIsLoggedIn(false);
-    if (reason) setLogoutReason(reason);
-    stopLoading();
   };
 
   const callIsTokenValid = async () => {
     startLoading();
-    const valid = await isTokenValid();
-    stopLoading();
-    return valid;
+
+    try{
+      const valid = await isTokenValid();
+      return valid;
+    } catch (error) {
+      console.error('Error checking token validity:', error);
+    } finally {
+      stopLoading();
+    }
   };
 
   const isTokenValid = async () => {

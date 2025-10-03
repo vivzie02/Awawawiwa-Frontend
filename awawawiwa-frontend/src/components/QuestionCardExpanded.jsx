@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { PatchQuestionById } from "../services/QuestionService";
+import { patchQuestionById } from "../services/QuestionService";
 
 export default function QuestionCardExpanded({ questionId, initialQuestion, initialAnswer, approved, category, onClose, onUpdate }) {
   const [question, setQuestion] = useState(initialQuestion);
@@ -10,7 +10,7 @@ export default function QuestionCardExpanded({ questionId, initialQuestion, init
     try {
       setSaving(true);
       // update backend
-      await PatchQuestionById(questionId, { question, answer, approved, category });
+      await patchQuestionById(questionId, { question, answer, approved, category });
       // update frontend state via parent callback
       onUpdate(questionId, { question, answer });
       onClose();

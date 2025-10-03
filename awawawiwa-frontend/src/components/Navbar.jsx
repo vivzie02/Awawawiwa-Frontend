@@ -1,6 +1,4 @@
-import React from 'react';
 import { useAuth } from "../contexts/AuthContext"
-import { logoutUser } from '../services/AuthService';
 import { useNavigate } from 'react-router-dom';
 
 export default function Navbar(){

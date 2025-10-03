@@ -1,8 +1,12 @@
 import { useState } from "react";
-import { RegisterUser } from "../services/UserService";
+import { registerUser } from "../services/UserService";
 import { useNavigate } from "react-router-dom";
 import MessageBox from "../components/MessageBox";
 import { useLoading } from "../contexts/LoadingContext";
+import { loginUser } from "../services/AuthService";
+import { useAuth } from "../contexts/AuthContext";
+
+const MIN_PASSWORD_LENGTH = 8;
 
 export default function Register(){
     const [username, setUsername] = useState('');
@@ -11,6 +15,7 @@ export default function Register(){
     const [error, setError] = useState('');
     const navigate = useNavigate();
     const { startLoading, stopLoading } = useLoading();
+    const { login } = useAuth();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -24,8 +29,12 @@ export default function Register(){
         try{
             startLoading();
 
-            await RegisterUser(username, password, email);
-            navigate('/');
+            var userRegistered = await registerUser(username, password, email);
+
+            if(userRegistered){
+                await loginUser(username, password, login);
+                navigate('/');
+            }
         } catch(error){
             setError(error.message);
         }
@@ -40,7 +49,7 @@ export default function Register(){
 
             <form className="space-y-4" onSubmit={handleSubmit}>
                 <input type="text" id="username" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username" className="w-full p-2 border rounded" required />
-                <input type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" className="w-full p-2 border rounded" required />
+                <input type="password" minLength={MIN_PASSWORD_LENGTH} id="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" className="w-full p-2 border rounded" required />
                 <input type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" className="w-full p-2 border rounded" required />
                 {error && 
                     <MessageBox 

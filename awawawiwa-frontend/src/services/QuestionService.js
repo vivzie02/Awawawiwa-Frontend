@@ -1,6 +1,6 @@
 import { API_BASE_URL } from "../config/config";
 
-export async function SubmitQuestion(category, question, image, answer){
+export async function submitQuestion(category, question, image, answer){
     const token = localStorage.getItem('aw-jwt');
 
     const res = await fetch(`${API_BASE_URL}/questions`, {
@@ -20,7 +20,7 @@ export async function SubmitQuestion(category, question, image, answer){
     return "Question uploaded successfully";
 }
 
-export async function GetUserQuestions(){
+export async function getUserQuestions(){
     const token = localStorage.getItem('aw-jwt');
 
     const res = await fetch(`${API_BASE_URL}/questions/user`, {
@@ -39,7 +39,7 @@ export async function GetUserQuestions(){
     return await res.json();
 }
 
-export async function DeleteQuestionById(questionId){
+export async function deleteQuestionById(questionId){
     const token = localStorage.getItem('aw-jwt');
 
     const res = await fetch(`${API_BASE_URL}/questions/${questionId}`, {
@@ -58,7 +58,7 @@ export async function DeleteQuestionById(questionId){
     return "Question deleted";
 }
 
-export async function PatchQuestionById(questionId, updatedData) {
+export async function patchQuestionById(questionId, updatedData) {
     const token = localStorage.getItem('aw-jwt');
 
     const res = await fetch(`${API_BASE_URL}/questions/${questionId}`, {
