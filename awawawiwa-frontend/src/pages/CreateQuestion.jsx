@@ -76,25 +76,6 @@ export default function CreateQuestion() {
                 </div>
 
                 <div>
-                    <label className="block mb-1 font-medium">Optional Image</label>
-                    <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    className="block w-full text-sm text-gray-600"
-                    />
-                    {image && (
-                    <div className="mt-2">
-                        <img
-                        src={URL.createObjectURL(image)}
-                        alt="Preview"
-                        className="max-h-40 rounded border"
-                        />
-                    </div>
-                    )}
-                </div>
-
-                <div>
                     <label className="block mb-1 font-medium">Answer</label>
                     <textarea
                     value={answer}

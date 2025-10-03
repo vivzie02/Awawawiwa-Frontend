@@ -4,7 +4,7 @@ import { logoutUser } from '../services/AuthService';
 import { useNavigate } from 'react-router-dom';
 
 export default function Navbar(){
-    const { isLoggedIn, logout, callIsTokenValid } = useAuth();
+    const { isLoggedIn, logout } = useAuth();
     const navigate = useNavigate();
 
     return (
@@ -15,7 +15,7 @@ export default function Navbar(){
         <div className='flex justify-end'>
             <ul className="flex space-x-6 mr-8">
                 {!isLoggedIn && <li><a href="/login" className="hover:text-blue-400">Login</a></li> }
-                {isLoggedIn && <li><button onClick={() => logoutUser(logout, navigate, callIsTokenValid)} className='hover:text-blue-400 cursor-pointer'>Logout</button></li> }
+                {isLoggedIn && <li><button onClick={async () => {await logout(); navigate('/');}} className='hover:text-blue-400 cursor-pointer'>Logout</button></li> }
                 {isLoggedIn && <li><a href="/profile" className="hover:text-blue-400">Profile</a></li> }
                 <li><a href="/about" className="hover:text-blue-400">About</a></li>
             </ul>
