@@ -1,6 +1,6 @@
 import { API_BASE_URL } from "../config/config";
 
-export async function RegisterUser(username, password, email){
+export async function registerUser(username, password, email){
     const res = await fetch(`${API_BASE_URL}/users`, {
         method: 'POST',
         headers: {
@@ -13,9 +13,11 @@ export async function RegisterUser(username, password, email){
         const data = await res.json();
         throw new Error(data.message);
     }
+
+    return res.ok;
 }
 
-export async function GetUser(){
+export async function getUser(){
     const token = localStorage.getItem('aw-jwt');
 
     const res = await fetch(`${API_BASE_URL}/users/me`, {
@@ -35,7 +37,7 @@ export async function GetUser(){
     
 }
 
-export async function UploadProfilePicture(file){
+export async function uploadProfilePicture(file){
     const token = localStorage.getItem('aw-jwt');
 
     if(file){

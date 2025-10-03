@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { categories } from "../constants/question-categories";
-import { SubmitQuestion } from "../services/QuestionService";
+import { submitQuestion } from "../services/QuestionService";
 import MessageBox from "../components/MessageBox";
 import { useLoading } from "../contexts/LoadingContext";
 
@@ -14,17 +14,12 @@ export default function CreateQuestion() {
     const [messageType, setMessageType] = useState('')
     const { isLoading, startLoading, stopLoading } = useLoading();
 
-    const handleFileChange = (e) => {
-        const file = e.target.files?.[0];
-        if (file) setImage(file);
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         startLoading();
         try {
-            let response = await SubmitQuestion(category, question, image, answer);
+            let response = await submitQuestion(category, question, image, answer);
 
             // Reset form
             setCategory("");

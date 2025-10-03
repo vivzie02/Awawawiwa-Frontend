@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { useAuth } from "../contexts/AuthContext";
+import { useEffect, useState } from "react";
 import { useLoading } from "../contexts/LoadingContext";
 
 export default function LoadingScreen({ children }) {

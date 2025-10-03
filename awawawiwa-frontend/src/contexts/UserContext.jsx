@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { GetUser } from "../services/UserService";
+import { getUser } from "../services/UserService";
 import { useAuth } from "./AuthContext";
 import { useLoading } from "./LoadingContext";
 
@@ -9,7 +9,7 @@ export const UserProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [error, setError] = useState(null);
     const { isLoggedIn } = useAuth();
-    const { isLoading, startLoading, stopLoading } = useLoading();
+    const { startLoading, stopLoading } = useLoading();
 
     const fetchUser = async () => {
         startLoading();
@@ -20,7 +20,7 @@ export const UserProvider = ({ children }) => {
         }
 
         try {
-            const data = await GetUser();
+            const data = await getUser();
             setUser(data);
         } catch (err) {
             console.error("Failed to fetch user:", err);
