@@ -4,7 +4,7 @@ import QuestionCardExpanded from './QuestionCardExpanded';
 export default function QuestionCard({ question, answer, approved, questionId, category, onDelete, onUpdate }) {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const truncateText = (text, length = 100) =>
+  const truncateText = (text, length = 50) =>
     text.length > length ? text.slice(0, length) + '...' : text;
 
   return (
