@@ -58,6 +58,8 @@ export default function Profile() {
     });
 
     const handleDelete = async (questionId) => {
+        startLoading();
+
         try {
             await deleteQuestionById(questionId);
             setMessageType("success");
@@ -71,6 +73,9 @@ export default function Profile() {
             setMessageType("error");
             setMessageTitle("Error");
             setMessage(err.message || "Failed to delete question");
+        }
+        finally{
+            stopLoading();
         }
     };
 

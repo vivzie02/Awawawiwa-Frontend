@@ -3,6 +3,7 @@ import { categories } from "../constants/question-categories";
 import { submitQuestion } from "../services/QuestionService";
 import MessageBox from "../components/MessageBox";
 import { useLoading } from "../contexts/LoadingContext";
+import { MAX_QUESTION_LENGTH } from "../constants/constants";
 
 export default function CreateQuestion() {
     const [category, setCategory] = useState("");
@@ -61,7 +62,7 @@ export default function CreateQuestion() {
 
                 <div>
                     <label className="block mb-1 font-medium">Question</label>
-                    <textarea
+                    <textarea maxLength={MAX_QUESTION_LENGTH}
                     value={question}
                     onChange={(e) => setQuestion(e.target.value)}
                     required
@@ -72,7 +73,7 @@ export default function CreateQuestion() {
 
                 <div>
                     <label className="block mb-1 font-medium">Answer</label>
-                    <textarea
+                    <textarea maxLength={MAX_QUESTION_LENGTH}
                     value={answer}
                     onChange={(e) => setAnswer(e.target.value)}
                     required
