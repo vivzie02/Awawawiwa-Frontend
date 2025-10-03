@@ -17,7 +17,7 @@ export const loginUser = async (username, password, login) => {
   await login(data.token)
 };
 
-export async function logoutUser(logout, navigate){
+export async function logoutUser(){
   const token = localStorage.getItem('aw-jwt');
 
   const res = await fetch(`${API_BASE_URL}/users/logout`, {
@@ -28,10 +28,9 @@ export async function logoutUser(logout, navigate){
     }
   });
 
-  logout();
-  navigate('/');
-
   if(!res.ok){
     console.error('Error logging out user');
   }
+
+  return res.ok;
 }  
