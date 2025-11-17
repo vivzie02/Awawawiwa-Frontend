@@ -1,16 +1,20 @@
 import { useState } from "react";
-import { PatchQuestionById } from "../services/QuestionService";
+import { patchQuestionById } from "../services/QuestionService";
+import { MAX_QUESTION_LENGTH } from "../constants/constants";
+import { useLoading } from "../contexts/LoadingContext";
 
 export default function QuestionCardExpanded({ questionId, initialQuestion, initialAnswer, approved, category, onClose, onUpdate }) {
   const [question, setQuestion] = useState(initialQuestion);
   const [answer, setAnswer] = useState(initialAnswer);
   const [saving, setSaving] = useState(false);
+  const { startLoading, stopLoading } = useLoading();
 
   const handleSave = async () => {
+    startLoading();
     try {
       setSaving(true);
       // update backend
-      await PatchQuestionById(questionId, { question, answer, approved, category });
+      await patchQuestionById(questionId, { question, answer, approved, category });
       // update frontend state via parent callback
       onUpdate(questionId, { question, answer });
       onClose();
@@ -18,6 +22,7 @@ export default function QuestionCardExpanded({ questionId, initialQuestion, init
       console.error("Error updating question:", err);
     } finally {
       setSaving(false);
+      stopLoading();
     }
   };
 
@@ -34,7 +39,7 @@ export default function QuestionCardExpanded({ questionId, initialQuestion, init
         <h2 className="text-xl font-semibold text-gray-800 mb-4">Edit Question</h2>
 
         <label className="block mb-2 text-sm font-medium">Question</label>
-        <textarea
+        <textarea maxLength={MAX_QUESTION_LENGTH}
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
           className="w-full border border-gray-300 rounded-lg p-2 mb-4"
@@ -42,7 +47,7 @@ export default function QuestionCardExpanded({ questionId, initialQuestion, init
         />
 
         <label className="block mb-2 text-sm font-medium">Answer</label>
-        <textarea
+        <textarea maxLength={MAX_QUESTION_LENGTH}
           value={answer}
           onChange={(e) => setAnswer(e.target.value)}
           className="w-full border border-gray-300 rounded-lg p-2 mb-4"

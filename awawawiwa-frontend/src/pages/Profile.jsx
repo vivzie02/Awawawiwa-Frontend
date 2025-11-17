@@ -1,11 +1,11 @@
 import { useEffect, useState, useLayoutEffect } from "react";
-import { UploadProfilePicture } from "../services/UserService";
+import { uploadProfilePicture } from "../services/UserService";
 import { useNavigate } from "react-router-dom";
 import MessageBox from "../components/MessageBox";
 import { CameraIcon } from '@heroicons/react/24/outline';
 import { IMAGE_BASE_URL } from "../config/config";
 import QuestionCard from "../components/QuestionCard";
-import { GetUserQuestions, DeleteQuestionById } from "../services/QuestionService";
+import { getUserQuestions, deleteQuestionById } from "../services/QuestionService";
 import { categories } from "../constants/question-categories";
 import { useUser } from "../contexts/UserContext";
 import { useLoading } from "../contexts/LoadingContext";
@@ -29,7 +29,7 @@ export default function Profile() {
 
         //fetch user questions
         try{
-            const userQuestions = await GetUserQuestions();
+            const userQuestions = await getUserQuestions();
             setQuestions(userQuestions);
 
             stopLoading();
@@ -58,8 +58,10 @@ export default function Profile() {
     });
 
     const handleDelete = async (questionId) => {
+        startLoading();
+
         try {
-            await DeleteQuestionById(questionId);
+            await deleteQuestionById(questionId);
             setMessageType("success");
             setMessageTitle("Deleted");
             setMessage("Question deleted successfully");
@@ -71,6 +73,9 @@ export default function Profile() {
             setMessageType("error");
             setMessageTitle("Error");
             setMessage(err.message || "Failed to delete question");
+        }
+        finally{
+            stopLoading();
         }
     };
 
@@ -110,7 +115,7 @@ export default function Profile() {
                             onChange={
                                 async (e) => {
                                     try{
-                                        var result = await UploadProfilePicture(e.target.files[0]);
+                                        var result = await uploadProfilePicture(e.target.files[0]);
 
                                         setMessageType("success");
                                         setMessageTitle("Success");

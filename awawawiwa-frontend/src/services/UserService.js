@@ -1,7 +1,7 @@
 import { API_BASE_URL } from "../config/config";
 
-export async function RegisterUser(username, password, email){
-    const res = await fetch(`${API_BASE_URL}/users`, {
+export async function registerUser(username, password, email){
+    const res = await fetch(`${API_BASE_URL}/user`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -13,12 +13,14 @@ export async function RegisterUser(username, password, email){
         const data = await res.json();
         throw new Error(data.message);
     }
+
+    return res.ok;
 }
 
-export async function GetUser(){
+export async function getUser(){
     const token = localStorage.getItem('aw-jwt');
 
-    const res = await fetch(`${API_BASE_URL}/users/me`, {
+    const res = await fetch(`${API_BASE_URL}/user/me`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -35,14 +37,14 @@ export async function GetUser(){
     
 }
 
-export async function UploadProfilePicture(file){
+export async function uploadProfilePicture(file){
     const token = localStorage.getItem('aw-jwt');
 
     if(file){
         const formData = new FormData();
         formData.append('profilePicture', file);
 
-        const response = await fetch(`${API_BASE_URL}/users/me/profilePicture`, {
+        const response = await fetch(`${API_BASE_URL}/user/me/profile-picture`, {
             method: 'POST',
             body: formData,
             headers: {

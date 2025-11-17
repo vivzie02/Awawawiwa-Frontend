@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { categories } from "../constants/question-categories";
-import { SubmitQuestion } from "../services/QuestionService";
+import { submitQuestion } from "../services/QuestionService";
 import MessageBox from "../components/MessageBox";
 import { useLoading } from "../contexts/LoadingContext";
+import { MAX_QUESTION_LENGTH } from "../constants/constants";
 
 export default function CreateQuestion() {
     const [category, setCategory] = useState("");
@@ -14,17 +15,12 @@ export default function CreateQuestion() {
     const [messageType, setMessageType] = useState('')
     const { isLoading, startLoading, stopLoading } = useLoading();
 
-    const handleFileChange = (e) => {
-        const file = e.target.files?.[0];
-        if (file) setImage(file);
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         startLoading();
         try {
-            let response = await SubmitQuestion(category, question, image, answer);
+            let response = await submitQuestion(category, question, image, answer);
 
             // Reset form
             setCategory("");
@@ -66,7 +62,7 @@ export default function CreateQuestion() {
 
                 <div>
                     <label className="block mb-1 font-medium">Question</label>
-                    <textarea
+                    <textarea maxLength={MAX_QUESTION_LENGTH}
                     value={question}
                     onChange={(e) => setQuestion(e.target.value)}
                     required
@@ -77,7 +73,7 @@ export default function CreateQuestion() {
 
                 <div>
                     <label className="block mb-1 font-medium">Answer</label>
-                    <textarea
+                    <textarea maxLength={MAX_QUESTION_LENGTH}
                     value={answer}
                     onChange={(e) => setAnswer(e.target.value)}
                     required
