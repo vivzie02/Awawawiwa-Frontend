@@ -1,7 +1,7 @@
 import { API_BASE_URL } from "../config/config";
 
 export async function registerUser(username, password, email){
-    const res = await fetch(`${API_BASE_URL}/users`, {
+    const res = await fetch(`${API_BASE_URL}/user`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -20,7 +20,7 @@ export async function registerUser(username, password, email){
 export async function getUser(){
     const token = localStorage.getItem('aw-jwt');
 
-    const res = await fetch(`${API_BASE_URL}/users/me`, {
+    const res = await fetch(`${API_BASE_URL}/user/me`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -44,7 +44,7 @@ export async function uploadProfilePicture(file){
         const formData = new FormData();
         formData.append('profilePicture', file);
 
-        const response = await fetch(`${API_BASE_URL}/users/me/profilePicture`, {
+        const response = await fetch(`${API_BASE_URL}/user/me/profile-picture`, {
             method: 'POST',
             body: formData,
             headers: {

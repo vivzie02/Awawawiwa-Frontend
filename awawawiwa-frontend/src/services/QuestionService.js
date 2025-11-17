@@ -3,7 +3,7 @@ import { API_BASE_URL } from "../config/config";
 export async function submitQuestion(category, question, image, answer){
     const token = localStorage.getItem('aw-jwt');
 
-    const res = await fetch(`${API_BASE_URL}/questions`, {
+    const res = await fetch(`${API_BASE_URL}/question`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -23,7 +23,7 @@ export async function submitQuestion(category, question, image, answer){
 export async function getUserQuestions(){
     const token = localStorage.getItem('aw-jwt');
 
-    const res = await fetch(`${API_BASE_URL}/questions/user`, {
+    const res = await fetch(`${API_BASE_URL}/question/user`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -42,7 +42,7 @@ export async function getUserQuestions(){
 export async function deleteQuestionById(questionId){
     const token = localStorage.getItem('aw-jwt');
 
-    const res = await fetch(`${API_BASE_URL}/questions/${questionId}`, {
+    const res = await fetch(`${API_BASE_URL}/question/${questionId}`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
@@ -61,7 +61,7 @@ export async function deleteQuestionById(questionId){
 export async function patchQuestionById(questionId, updatedData) {
     const token = localStorage.getItem('aw-jwt');
 
-    const res = await fetch(`${API_BASE_URL}/questions/${questionId}`, {
+    const res = await fetch(`${API_BASE_URL}/question/${questionId}`, {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',

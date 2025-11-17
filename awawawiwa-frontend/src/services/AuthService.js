@@ -1,7 +1,7 @@
 import { API_BASE_URL } from "../config/config";
 
 export const loginUser = async (username, password, login) => {
-  const res = await fetch(`${API_BASE_URL}/users/login`, {
+  const res = await fetch(`${API_BASE_URL}/user/login`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
