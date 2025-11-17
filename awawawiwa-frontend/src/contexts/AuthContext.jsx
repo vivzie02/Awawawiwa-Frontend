@@ -57,13 +57,13 @@ export const AuthProvider = ({ children }) => {
       if(!success){
         console.error('Logout failed');
       }
+    } catch (error) {
+      console.error('Error logging out:', error);
+    } finally {
       localStorage.removeItem('aw-jwt');
       localStorage.removeItem('refresh-token');
       setIsLoggedIn(false);
       if (reason) setLogoutReason(reason);
-    } catch (error) {
-      console.error('Error logging out:', error);
-    } finally {
       stopLoading();
     }
   };
