@@ -1,0 +1,15 @@
+services:
+  awawawiwa-frontend:
+    build:
+      context: ./awawawiwa-frontend
+      dockerfile: Dockerfile
+    container_name: awawawiwa-frontend
+    image: vivzie02/awawawiwa-frontend:latest
+    restart: always
+    ports:
+      - "8080:80" 
+    networks:
+      - webnet
+
+networks:
+  webnet:
